@@ -19,8 +19,8 @@ int w, h;
 float[] depthLookUp = new float[2048];
 
 void setup() {
-  w = displayWidth;
-  h = displayHeight;
+  w = 640;
+  h = 480;
   size(displayWidth,displayHeight,P3D);
   kinect = new Kinect(this);
   kinect.start();
@@ -49,11 +49,13 @@ void draw() {
   int skip = 8;
 
   // Translate and rotate
-  translate(width/2,height/2,-50);
+  scale(1.5);
+  translate(width/4,height/4,-50);
   //rotateY(a);
 
   for(int x=0; x<w; x+=skip) {
     for(int y=0; y<h; y+=skip) {
+      int mx = mouseX/30 + 1;
       int offset = x+y*w;
 
       // Convert kinect data to world xyz coordinate
@@ -68,8 +70,11 @@ void draw() {
       // Draw a point
       // point(0,0);
       stroke(255, factor-v.z*factor/2);
-      fill(255, factor-v.z*factor/2);
-      ellipse(0, 0, v.x*factor/8,v.y*factor/8);
+      if (x % mx == 0) fill(255, 150);
+      else fill(255, 30);
+      textSize(8);
+      text((int) random(9), v.x*factor/8,v.y*factor/8);
+      // ellipse(0, 0, v.x*factor/8,v.y*factor/8);
       // line(0, 0, v.x*factor,v.y*factor);
       popMatrix();
     }
