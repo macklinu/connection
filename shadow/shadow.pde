@@ -19,15 +19,15 @@ void setup() {
 }
 
 void draw() {
-  //background(255);
-  fill(255, 50);
-  noStroke();
-  rect(0, 0, width, height);
-
+  background(0);
   // Run the tracking analysis
   tracker.track();
+  pushMatrix();
+  // scale(map(mouseY, height, 0, 0.5, 2.5));
+  translate(map(mouseX, 0, width, -50, 50), map(mouseY, 0, height, -50, 50));
   // Show the image
   tracker.display();
+  popMatrix();
 
   // Let's draw the raw location
   

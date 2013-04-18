@@ -19,8 +19,9 @@ int w, h;
 float[] depthLookUp = new float[2048];
 
 void setup() {
-  w = displayWidth;
-  h = displayHeight;
+  w = 640;
+  h = 480;
+  colorMode(HSB);
   size(displayWidth,displayHeight,P3D);
   kinect = new Kinect(this);
   kinect.start();
@@ -67,10 +68,10 @@ void draw() {
       translate(v.x*factor,v.y*factor,factor-v.z*factor);
       // Draw a point
       // point(0,0);
-      stroke(255, factor-v.z*factor/2);
+      stroke(30, 0, 255, factor+v.z*factor);
       fill(255, factor-v.z*factor/2);
-      ellipse(0, 0, v.x*factor/8,v.y*factor/8);
-      // line(0, 0, v.x*factor,v.y*factor);
+      // ellipse(0, 0, v.x*factor/8,v.y*factor/8);
+      line(0 - mouseX/10 - v.x*factor, 0, v.x*factor,v.y*factor);
       popMatrix();
     }
   }
