@@ -12,14 +12,19 @@ KinectTracker tracker;
 // Kinect Library object
 Kinect kinect;
 
+boolean noise = false;
+
 void setup() {
-  size(640,520);
+  size(640, 520);
   kinect = new Kinect(this);
   tracker = new KinectTracker();
 }
 
 void draw() {
-  background(0);
+  // background(255);
+  fill(255, map(mouseY, 0, height, 0, 255));
+  noStroke();
+  rect(0, 0, width, height);
   // Run the tracking analysis
   tracker.track();
   pushMatrix();
@@ -30,23 +35,23 @@ void draw() {
   popMatrix();
 
   // Let's draw the raw location
-  
+
   PVector v1 = tracker.getPos();
-  fill(50,100,250,200);
+  fill(50, 100, 250, 200);
   noStroke();
-  ellipse(v1.x,v1.y,20,20);
-  
+  ellipse(v1.x, v1.y, 20, 20);
+
 
   // Let's draw the "lerped" location
   PVector v2 = tracker.getLerpedPos();
-  fill(100,250,50,200);
+  fill(100, 250, 50, 200);
   noStroke();
-  ellipse(v2.x,v2.y,20,20);
+  ellipse(v2.x, v2.y, 20, 20);
 
   // Display some info
   int t = tracker.getThreshold();
   fill(0);
-  text("threshold: " + t + "    " +  "framerate: " + (int)frameRate + "    " + "UP increase threshold, DOWN decrease threshold",10,500);
+  text("threshold: " + t + "    " +  "framerate: " + (int)frameRate + "    " + "UP increase threshold, DOWN decrease threshold", 10, 500);
 }
 
 void keyPressed() {
@@ -60,6 +65,11 @@ void keyPressed() {
       t-=5;
       tracker.setThreshold(t);
     }
+  }
+
+  if (key == ' ') { 
+    noise = !noise;
+    tracker.setNoise(noise);
   }
 }
 

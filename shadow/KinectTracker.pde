@@ -18,6 +18,7 @@ class KinectTracker {
 
 
   PImage display;
+  boolean noise = false;
 
   KinectTracker() {
     kinect.start();
@@ -27,10 +28,10 @@ class KinectTracker {
     // but this example is just demonstrating everything
     kinect.processDepthImage(true);
 
-    display = createImage(kw,kh,PConstants.RGB);
+    display = createImage(kw, kh, PConstants.RGB);
 
-    loc = new PVector(0,0);
-    lerpedLoc = new PVector(0,0);
+    loc = new PVector(0, 0);
+    lerpedLoc = new PVector(0, 0);
   }
 
   void track() {
@@ -45,8 +46,8 @@ class KinectTracker {
     float sumY = 0;
     float count = 0;
 
-    for(int x = 0; x < kw; x++) {
-      for(int y = 0; y < kh; y++) {
+    for (int x = 0; x < kw; x++) {
+      for (int y = 0; y < kh; y++) {
         // Mirroring the image
         int offset = kw-x-1+y*kw;
         // Grabbing the raw depth
@@ -62,7 +63,7 @@ class KinectTracker {
     }
     // As long as we found something
     if (count != 0) {
-      loc = new PVector(sumX/count,sumY/count);
+      loc = new PVector(sumX/count, sumY/count);
     }
 
     // Interpolating the location, doing it arbitrarily for now
@@ -87,27 +88,39 @@ class KinectTracker {
     // Going to rewrite the depth image to show which pixels are in threshold
     // A lot of this is redundant, but this is just for demonstration purposes
     display.loadPixels();
-    for(int x = 0; x < kw; x++) {
-      for(int y = 0; y < kh; y++) {
+    for (int x = 0; x < kw; x++) {
+      for (int y = 0; y < kh; y++) {
         // mirroring image
         int offset = kw-x-1+y*kw;
         // Raw depth
         int rawDepth = depth[offset];
 
         int pix = x+y*display.width;
-        if (rawDepth < threshold) {
-          // A red color instead
-          display.pixels[pix] = img.pixels[offset]; //color(150,50,50);
-        } 
+        if (noise) {
+          if (rawDepth < threshold) {
+            // A red color instead
+            display.pixels[pix] = color(random(map(mouseX, 0, width, 0, 255)));// img.pixels[offset]; //color(150,50,50);
+          } 
+          else {
+            display.pixels[pix] = color(255);
+          }
+        }
         else {
-          display.pixels[pix] = color(0,0);
+          if (rawDepth < threshold) {
+            // A red color instead
+            display.pixels[pix] = color(0);// img.pixels[offset]; //color(150,50,50);
+          } 
+          else {
+            display.pixels[pix] = color(255);
+          }
         }
       }
     }
     display.updatePixels();
 
     // Draw the image
-    image(display,0,0);
+    tint(255, map(mouseX, 0, width, 0, 255));
+    image(display, 0, 0);
   }
 
   void quit() {
@@ -116,6 +129,10 @@ class KinectTracker {
 
   int getThreshold() {
     return threshold;
+  }
+
+  void setNoise(boolean b) {
+    noise = b;
   }
 
   void setThreshold(int t) {
